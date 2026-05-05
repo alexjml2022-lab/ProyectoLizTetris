@@ -1,6 +1,9 @@
 #include "grid.h"
+#include "colors.h"
 #include <iostream>
 using namespace std;
+using namespace MikuColores;
+using namespace NeruColores;
 
 Grid::Grid()
 {
@@ -8,6 +11,7 @@ Grid::Grid()
     numCols = 10;
     tamCelda = 30;
     Iniciar();
+    colors = GetCellColors();
 }
 
 void Grid::Iniciar()
@@ -31,4 +35,24 @@ void Grid::Imprimir()
         }
         cout << endl;
     }
+}
+vector<Color> Grid::GetCellColors()
+{
+    Color neruGrey;
+    Color neruYellow;
+    Color neruOrange;
+    Color neruCremita;
+    Color neruLiteGrey;
+    Color mikuFiusha;
+    Color mikuDarkCyan;
+    Color mikuCyan;
+
+    return {neruGrey,
+            neruYellow,
+            neruOrange,
+            neruCremita,
+            neruLiteGrey,
+            mikuFiusha,
+            mikuDarkCyan,
+            mikuCyan};
 }
