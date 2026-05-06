@@ -38,21 +38,35 @@ void Grid::Imprimir()
 }
 vector<Color> Grid::GetCellColors()
 {
-    Color neruGrey;
-    Color neruYellow;
-    Color neruOrange;
-    Color neruCremita;
-    Color neruLiteGrey;
-    Color mikuFiusha;
-    Color mikuDarkCyan;
-    Color mikuCyan;
+    Color neruGrey = {69, 70, 65, 255};
+    Color neruYellow = {242, 188, 87, 255};
+    Color neruOrange = {217, 146, 59, 255};
+    Color neruCremita = {242, 196, 155, 255};
+    Color neruLiteGrey = {158, 152, 140, 255};
+    Color mikuCyan = {134, 206, 203, 255};
+    Color mikuDarkCyan = {19, 122, 127, 255};
+    Color mikuFiusha = {225, 40, 133, 255};
 
-    return {neruGrey,
-            neruYellow,
-            neruOrange,
-            neruCremita,
-            neruLiteGrey,
-            mikuFiusha,
-            mikuDarkCyan,
-            mikuCyan};
+    return {
+        neruGrey,
+        mikuFiusha,
+        neruYellow,
+        mikuDarkCyan,
+        neruOrange,
+        mikuCyan,
+        neruCremita,
+        neruLiteGrey,
+    };
+}
+
+void Grid::Dibujar()
+{
+    for (int reng = 0; reng < numRens; reng++)
+    {
+        for (int cols = 0; cols < numCols; cols++)
+        {
+            int ValCeld = grid[reng][cols];
+            DrawRectangle(cols * tamCelda + 1, reng * tamCelda + 1, tamCelda - 1, tamCelda - 1, colors[ValCeld]);
+        }
+    }
 }

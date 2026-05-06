@@ -9,13 +9,14 @@ int main()
     SetTargetFPS(60);
 
     Grid grid = Grid();
-    grid.Imprimir();
+    grid.Imprimir(); 
 
     while (!WindowShouldClose())
     {
         BeginDrawing();
 
         ClearBackground(tetoRed);
+        grid.Dibujar();
 
         EndDrawing();
     }
