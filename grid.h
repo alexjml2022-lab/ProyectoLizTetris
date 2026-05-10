@@ -9,10 +9,10 @@ public:
     void Iniciar();
     void Imprimir();
     void Dibujar();
+    bool IsCellOutSide(int reng, int col);
     int grid[20][10];
 
 private:
-    vector<Color> GetCellColors();
     int numRens;
     int numCols;
     int tamCelda;

@@ -1,6 +1,7 @@
 #include "raylib.h"
-#include "colors.h"
-#include "grid.h"
+#include "colorss.h"
+#include "juego.h"
+
 using namespace TetoColores;
 int main()
 {
@@ -8,16 +9,14 @@ int main()
     InitWindow(300, 600, "Tetris");
     SetTargetFPS(60);
 
-    Grid grid = Grid();
-    grid.Imprimir(); 
-
+    Juego juego = Juego();
     while (!WindowShouldClose())
     {
         BeginDrawing();
 
+        juego.HandleInput();
         ClearBackground(tetoRed);
-        grid.Dibujar();
-
+        juego.Dibujar();
         EndDrawing();
     }
 
