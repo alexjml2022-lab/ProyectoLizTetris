@@ -1,5 +1,4 @@
 #include "bloque.h"
-#include <iostream>
 using namespace std;
 Bloque::Bloque()
 {
@@ -10,12 +9,12 @@ Bloque::Bloque()
     colOffset = 0;
 }
 
-void Bloque::Dibujar()
+void Bloque::Dibujar(int offsetX, int offsetY)
 {
     vector<Posicion> tiles = GetCellPosicion();
     for (Posicion item : tiles)
     {
-        DrawRectangle(item.col * tamCel + 1, item.reng * tamCel, tamCel - 1, tamCel - 1, colors[id]);
+        DrawRectangle(item.col * tamCel + offsetX, item.reng * tamCel + offsetY, tamCel - 1, tamCel - 1, colors[id]);
     }
 }
 
@@ -35,4 +34,22 @@ vector<Posicion> Bloque::GetCellPosicion()
         moverTiles.push_back(nPos);
     }
     return moverTiles;
+}
+
+void Bloque::Rotar()
+{
+    rotaCion++;
+    if (rotaCion == (int)celdas.size())
+    {
+        rotaCion = 0;
+    }
+}
+
+void Bloque::KyaRotacion()
+{
+    rotaCion--;
+    if (rotaCion == -1)
+    {
+        rotaCion = celdas.size() - 1;
+    }
 }

@@ -1,5 +1,4 @@
 #pragma once
-#include <iostream>
 #include <vector>
 #include <map>
 #include "posicion.h"
@@ -10,9 +9,12 @@ class Bloque
 {
 public:
     Bloque();
-    void Dibujar();
+    void Dibujar(int offsetX, int offsetY);
     void Mover(int rengs, int cols);
     vector<Posicion> GetCellPosicion();
+    void Rotar();
+    void KyaRotacion();
+
     int id;
     map<int, vector<Posicion>> celdas;
 

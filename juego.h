@@ -7,18 +7,29 @@ class Juego
 {
 public:
     Juego();
-    Bloque GetRandomBlock();
-    vector<Bloque> GetAllBloqcks();
+    ~Juego();
     void Dibujar();
     void HandleInput();
-    void MoverIzquierda();
-    void MoverDerecha();
     void MoverAbajo();
-    Grid grid;
+    bool gameOver;
+    int puntaje;
+    Music musica;
 
 private:
+    Grid grid;
+    Bloque GetRandomBlock();
+    vector<Bloque> GetAllBloqcks();
+    void MoverIzquierda();
+    void MoverDerecha();
     bool IsBlockOutSide();
+    void RotarBloque();
+    void TerryBlo();
+    bool coliBloque();
+    void Reset();
+    void FPuntaje(int lineas, int puntosMover);
     vector<Bloque> bloques;
     Bloque actuBloque;
     Bloque sigBloque;
+    Sound rotateSound;
+    Sound clearSound;
 };

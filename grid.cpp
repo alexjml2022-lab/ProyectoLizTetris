@@ -42,7 +42,7 @@ void Grid::Dibujar()
         for (int cols = 0; cols < numCols; cols++)
         {
             int ValCeld = grid[reng][cols];
-            DrawRectangle(cols * tamCelda + 1, reng * tamCelda + 1, tamCelda - 1, tamCelda - 1, colors[ValCeld]);
+            DrawRectangle(cols * tamCelda + 11, reng * tamCelda + 11, tamCelda - 1, tamCelda - 1, colors[ValCeld]);
         }
     }
 }
@@ -54,4 +54,60 @@ bool Grid::IsCellOutSide(int reng, int col)
         return false;
     }
     return true;
+}
+
+bool Grid::IsCellEmpty(int reng, int col)
+{
+    if (grid[reng][col] == 0)
+    {
+        return true;
+    }
+    return false;
+}
+
+int Grid::limpiarTodoRengs()
+{
+    int com = 0;
+    for (int reng = numRens - 1; reng >= 0; reng--)
+    {
+        if (IsRowFull(reng))
+        {
+            LimpiarReng(reng);
+            com++;
+        }
+        else if (com > 0)
+        {
+            MoverRengAbajo(reng, com);
+        }
+    }
+    return com;
+}
+
+bool Grid::IsRowFull(int reng)
+{
+    for (int col = 0; col < numCols; col++)
+    {
+        if (grid[reng][col] == 0)
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+void Grid::LimpiarReng(int reng)
+{
+    for (int col = 0; col < numCols; col++)
+    {
+        grid[reng][col] = 0;
+    }
+}
+
+void Grid::MoverRengAbajo(int reng, int numRengs)
+{
+    for (int col = 0; col < numCols; col++)
+    {
+        grid[reng + numRengs][col] = grid[reng][col];
+        grid[reng][col] = 0;
+    }
 }
