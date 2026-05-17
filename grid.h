@@ -6,13 +6,17 @@ class Grid
 {
 public:
     Grid();
+    ~Grid();
+    void BorrarMat();
     void Iniciar();
     void Imprimir();
     void Dibujar();
     bool IsCellOutSide(int reng, int col);
     bool IsCellEmpty(int reng, int col);
     int limpiarTodoRengs();
-    int grid[20][10];
+    int **grid;
+    Grid(const Grid &) = delete;
+    Grid &operator=(const Grid &) = delete;
 
 private:
     bool IsRowFull(int reng);

@@ -14,13 +14,27 @@ Grid::Grid()
 
 void Grid::Iniciar()
 {
-    for (int rens = 0; rens < numRens; rens++)
+    grid = new int *[numRens];
+    for (int reng = 0; reng < numRens; reng++)
     {
-        for (int cols = 0; cols < numCols; cols++)
+        grid[reng] = new int[numCols];
+        for (int col = 0; col < numCols; col++)
         {
-            grid[rens][cols] = 0;
+            grid[reng][col] = 0;
         }
     }
+}
+Grid::~Grid()
+{
+    BorrarMat();
+}
+void Grid::BorrarMat()
+{
+    for (int i = 0; i < numRens; ++i)
+    {
+        delete[] grid[i]; // Libera las columnas de cada fila
+    }
+    delete[] grid;
 }
 
 void Grid::Imprimir()
@@ -58,9 +72,8 @@ bool Grid::IsCellOutSide(int reng, int col)
 
 bool Grid::IsCellEmpty(int reng, int col)
 {
-    if (grid[reng][col] == 0)
-    {
-        return true;
+    if (reng >= 0 && reng < numRens && col >= 0 && col < numCols) {
+        return grid[reng][col] == 0;
     }
     return false;
 }

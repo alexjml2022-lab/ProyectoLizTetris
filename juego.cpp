@@ -9,9 +9,12 @@ enum puntajes
     threeL
 };
 
-Juego::Juego()
+Juego::Juego() : grid()
 {
-    grid = Grid();
+    // Al poner ': grid()' arriba, ya se inicializa correctamente.
+    // No necesitas poner 'grid = Grid()' aquí adentro.
+    gameOver = false;
+    puntaje = 0;
     bloques = GetAllBloqcks();
     actuBloque = GetRandomBlock();
     sigBloque = GetRandomBlock();
