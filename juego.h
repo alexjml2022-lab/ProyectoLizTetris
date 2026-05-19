@@ -1,35 +1,32 @@
 #pragma once
 #include "grid.h"
-#include "bloques.cpp"
+#include "bloque.h"
+#include <vector>
+
 using namespace std;
 
-class Juego
+struct Juego
 {
-public:
-    Juego();
-    ~Juego();
-    void Dibujar();
-    void HandleInput();
-    void MoverAbajo();
-    bool gameOver;
-    int puntaje;
-    Music musica;
-
-private:
     Grid grid;
-    Bloque GetRandomBlock();
-    vector<Bloque> GetAllBloqcks();
-    void MoverIzquierda();
-    void MoverDerecha();
-    bool IsBlockOutSide();
-    void RotarBloque();
-    void TerryBlo();
-    bool coliBloque();
-    void Reset();
-    void FPuntaje(int lineas, int puntosMover);
     vector<Bloque> bloques;
     Bloque actuBloque;
     Bloque sigBloque;
+    bool gameOver;
+    int puntaje;
+    Music musica;
     Sound rotateSound;
     Sound clearSound;
 };
+
+void Juego_Inicializar(Juego *j);
+void Juego_Destruir(Juego *j);
+void Juego_Dibujar(Juego *j);
+void Juego_HandleInput(Juego *j);
+void Juego_MoverAbajo(Juego *j);
+void Juego_MoverIzquierda(Juego *j);
+void Juego_MoverDerecha(Juego *j);
+bool Juego_IsBlockOutSide(Juego *j);
+void Juego_RotarBloque(Juego *j);
+void Juego_TerryBlo(Juego *j);
+bool Juego_coliBloque(Juego *j);
+void Juego_Reset(Juego *j);

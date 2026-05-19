@@ -1,6 +1,5 @@
 #include "juego.h"
 #include <random>
-using namespace std;
 
 enum puntajes
 {
@@ -9,127 +8,144 @@ enum puntajes
     threeL
 };
 
-Juego::Juego() : grid()
+Bloque CrearLBloque();
+Bloque CrearJBloque();
+Bloque CrearIBloque();
+Bloque CrearOBloque();
+Bloque CrearSBloque();
+Bloque CrearTBloque();
+Bloque CrearZBloque();
+
+vector<Bloque> Juego_GetAllBlocks()
 {
-    // Al poner ': grid()' arriba, ya se inicializa correctamente.
-    // No necesitas poner 'grid = Grid()' aquí adentro.
-    gameOver = false;
-    puntaje = 0;
-    bloques = GetAllBloqcks();
-    actuBloque = GetRandomBlock();
-    sigBloque = GetRandomBlock();
-    gameOver = false;
-    puntaje = 0;
-    InitAudioDevice();
-    musica = LoadMusicStream("musica/tetoris.MP3");
-    PlayMusicStream(musica);
-    rotateSound = LoadSound("");
-    clearSound = LoadSound("");
+    return {CrearLBloque(), CrearJBloque(), CrearIBloque(), CrearOBloque(), CrearSBloque(), CrearTBloque(), CrearZBloque()};
 }
 
-Juego::~Juego()
+Bloque Juego_GetRandomBlock(Juego *j)
 {
-    UnloadSound(clearSound);
-    UnloadSound(rotateSound);
-    UnloadMusicStream(musica);
+    if (j->bloques.empty())
+    {
+        j->bloques = Juego_GetAllBlocks();
+    }
+    int randIndex = rand() % j->bloques.size();
+    Bloque b = j->bloques[randIndex];
+    j->bloques.erase(j->bloques.begin() + randIndex);
+    return b;
+}
+
+void Juego_Inicializar(Juego *j)
+{
+    Grid_Iniciar(&j->grid);
+    j->gameOver = false;
+    j->puntaje = 0;
+    j->bloques = Juego_GetAllBlocks();
+    j->actuBloque = Juego_GetRandomBlock(j);
+    j->sigBloque = Juego_GetRandomBlock(j);
+
+    InitAudioDevice();
+    j->musica = LoadMusicStream("musica/tetoris.MP3");
+    PlayMusicStream(j->musica);
+    j->rotateSound = LoadSound("");
+    j->clearSound = LoadSound("");
+}
+
+void Juego_Destruir(Juego *j)
+{
+    Grid_BorrarMat(&j->grid);
+    UnloadSound(j->clearSound);
+    UnloadSound(j->rotateSound);
+    UnloadMusicStream(j->musica);
     CloseAudioDevice();
 }
 
-Bloque Juego::GetRandomBlock()
+void Juego_Dibujar(Juego *j)
 {
-    if (bloques.empty())
+    Grid_Dibujar(&j->grid);
+    Bloque_Dibujar(&j->actuBloque, 11, 11);
+
+    if (j->sigBloque.id == 3)
     {
-        bloques = GetAllBloqcks();
+        Bloque_Dibujar(&j->sigBloque, 255, 255);
     }
-    int randIndex = rand() % bloques.size();
-    Bloque bloque = bloques[randIndex];
-    bloques.erase(bloques.begin() + randIndex);
-    return bloque;
-}
-
-vector<Bloque> Juego::GetAllBloqcks()
-{
-    return {IBloque(), JBloque(), LBloque(), OBloque(), SBloque(), ZBloque(), TBloque()};
-}
-
-void Juego::Dibujar()
-{
-    grid.Dibujar();
-    actuBloque.Dibujar(11, 11);
-    sigBloque.Dibujar(270, 270);
-}
-
-void Juego::HandleInput()
-{
-    int keyPressed = GetKeyPressed();
-    if (gameOver && keyPressed != 0)
+    else if (j->sigBloque.id == 4)
     {
-        gameOver = false;
-        Reset();
+        Bloque_Dibujar(&j->sigBloque, 255, 235);
     }
+    else
+    {
+        Bloque_Dibujar(&j->sigBloque, 270, 240);
+    }
+}
 
-    switch (keyPressed)
+void Juego_HandleInput(Juego *j)
+{
+    int key = GetKeyPressed();
+    if (j->gameOver && key == KEY_S)
+    {
+        j->gameOver = false;
+        Juego_Reset(j);
+    }
+    switch (key)
     {
     case KEY_LEFT:
-        MoverIzquierda();
+        Juego_MoverIzquierda(j);
         break;
-
     case KEY_RIGHT:
-        MoverDerecha();
+        Juego_MoverDerecha(j);
         break;
-
     case KEY_DOWN:
-        MoverAbajo();
-        FPuntaje(0, 1);
+        Juego_MoverAbajo(j);
+        j->puntaje++;
         break;
-
     case KEY_UP:
-        RotarBloque();
+        Juego_RotarBloque(j);
         break;
     }
 }
 
-void Juego::MoverIzquierda()
+void Juego_MoverIzquierda(Juego *j)
 {
-    if (!gameOver)
+    if (!j->gameOver)
     {
-        actuBloque.Mover(0, -1);
-        if (IsBlockOutSide() || coliBloque() == false)
+        Bloque_Mover(&j->actuBloque, 0, -1);
+        if (Juego_IsBlockOutSide(j) || !Juego_coliBloque(j))
         {
-            actuBloque.Mover(0, 1);
-        }
-    }
-}
-void Juego::MoverDerecha()
-{
-    if (!gameOver)
-    {
-        actuBloque.Mover(0, 1);
-        if (IsBlockOutSide() || coliBloque() == false)
-        {
-            actuBloque.Mover(0, -1);
-        }
-    }
-}
-void Juego::MoverAbajo()
-{
-    if (!gameOver)
-    {
-        actuBloque.Mover(1, 0);
-        if (IsBlockOutSide() || coliBloque() == false)
-        {
-            actuBloque.Mover(-1, 0);
-            TerryBlo();
+            Bloque_Mover(&j->actuBloque, 0, 1);
         }
     }
 }
 
-bool Juego::IsBlockOutSide()
+void Juego_MoverDerecha(Juego *j)
 {
-    vector<Posicion> tiles = actuBloque.GetCellPosicion();
+    if (!j->gameOver)
+    {
+        Bloque_Mover(&j->actuBloque, 0, 1);
+        if (Juego_IsBlockOutSide(j) || !Juego_coliBloque(j))
+        {
+            Bloque_Mover(&j->actuBloque, 0, -1);
+        }
+    }
+}
+
+void Juego_MoverAbajo(Juego *j)
+{
+    if (!j->gameOver)
+    {
+        Bloque_Mover(&j->actuBloque, 1, 0);
+        if (Juego_IsBlockOutSide(j) || !Juego_coliBloque(j))
+        {
+            Bloque_Mover(&j->actuBloque, -1, 0);
+            Juego_TerryBlo(j);
+        }
+    }
+}
+
+bool Juego_IsBlockOutSide(Juego *j)
+{
+    vector<Posicion> tiles = Bloque_GetCellPosicion(&j->actuBloque);
     for (Posicion item : tiles)
     {
-        if (grid.IsCellOutSide(item.reng, item.col))
+        if (Grid_IsCellOutSide(&j->grid, item.reng, item.col))
         {
             return true;
         }
@@ -137,81 +153,68 @@ bool Juego::IsBlockOutSide()
     return false;
 }
 
-void Juego::RotarBloque()
+void Juego_RotarBloque(Juego *j)
 {
-    if (!gameOver)
+    if (!j->gameOver)
     {
-        actuBloque.Rotar();
-        if (IsBlockOutSide() || coliBloque() == false)
+        Bloque_Rotar(&j->actuBloque);
+        if (Juego_IsBlockOutSide(j) || !Juego_coliBloque(j))
         {
-            actuBloque.KyaRotacion();
+            Bloque_KyaRotacion(&j->actuBloque);
         }
         else
         {
-            PlaySound(rotateSound);
+            PlaySound(j->rotateSound);
         }
     }
 }
 
-void Juego::TerryBlo()
+void Juego_TerryBlo(Juego *j)
 {
-    vector<Posicion> tiles = actuBloque.GetCellPosicion();
+    vector<Posicion> tiles = Bloque_GetCellPosicion(&j->actuBloque);
     for (Posicion item : tiles)
     {
-        grid.grid[item.reng][item.col] = actuBloque.id;
+        j->grid.grid[item.reng][item.col] = j->actuBloque.id;
     }
-    actuBloque = sigBloque;
-    if (coliBloque() == false)
+    j->actuBloque = j->sigBloque;
+    if (!Juego_coliBloque(j))
     {
-        gameOver = true;
+        j->gameOver = true;
     }
+    j->sigBloque = Juego_GetRandomBlock(j);
 
-    sigBloque = GetRandomBlock();
-    int lineas = grid.limpiarTodoRengs();
+    int lineas = Grid_LimpiarTodoRengs(&j->grid);
     if (lineas > 0)
     {
-        PlaySound(clearSound);
-        FPuntaje(lineas, 0);
+        PlaySound(j->clearSound);
+        if (lineas == oneL)
+            j->puntaje += 100;
+        else if (lineas == twoL)
+            j->puntaje += 300;
+        else if (lineas == threeL)
+            j->puntaje += 500;
     }
 }
 
-bool Juego::coliBloque()
+bool Juego_coliBloque(Juego *j)
 {
-    vector<Posicion> tiles = actuBloque.GetCellPosicion();
+    vector<Posicion> tiles = Bloque_GetCellPosicion(&j->actuBloque);
     for (Posicion item : tiles)
     {
-        if (grid.IsCellEmpty(item.reng, item.col) == false)
+        if (Grid_IsCellEmpty(&j->grid, item.reng, item.col) == false)
+        {
             return false;
+        }
     }
     return true;
 }
 
-void Juego::Reset()
+void Juego_Reset(Juego *j)
 {
-    grid.Iniciar();
-    bloques = GetAllBloqcks();
-    actuBloque = GetRandomBlock();
-    sigBloque = GetRandomBlock();
-    puntaje = 0;
-}
-
-void Juego::FPuntaje(int lineas, int puntosMover)
-{
-    switch (lineas)
-    {
-    case oneL:
-        puntaje += 100;
-        break;
-
-    case twoL:
-        puntaje += 300;
-        break;
-
-    case threeL:
-        puntaje += 500;
-        break;
-    default:
-        break;
-    }
-    puntaje += puntosMover;
+    Grid_BorrarMat(&j->grid);
+    Grid_Iniciar(&j->grid);
+    j->bloques = Juego_GetAllBlocks();
+    j->actuBloque = Juego_GetRandomBlock(j);
+    j->sigBloque = Juego_GetRandomBlock(j);
+    j->puntaje = 0;
 }

@@ -1,11 +1,12 @@
-#include "raylib.h"
-#include "colorss.h"
+#include <raylib.h>
 #include "juego.h"
 #include <iostream>
+#include "colorss.h"
 
 using namespace TetoColores;
 
-double ultimoTempo = 0;
+double ultimoTempo = 0.0;
+
 bool EventTriggered(double intervalo)
 {
     double actuTempo = GetTime();
@@ -19,41 +20,51 @@ bool EventTriggered(double intervalo)
 
 int main()
 {
-
-    InitWindow(500, 620, "Tetris");
+    const int screenWidth = 500;
+    const int screenHeight = 620;
+    InitWindow(screenWidth, screenHeight, "Tetris");
     SetTargetFPS(60);
 
-    Juego juego = Juego();
+    Juego juego;
+    Juego_Inicializar(&juego);
+
     while (!WindowShouldClose())
     {
         UpdateMusicStream(juego.musica);
-        juego.HandleInput();
-        if (EventTriggered(0.2))
+        Juego_HandleInput(&juego);
+
+        if (!juego.gameOver && EventTriggered(0.2))
         {
-            juego.MoverAbajo();
+            Juego_MoverAbajo(&juego);
         }
+
         BeginDrawing();
         ClearBackground(tetoRed);
 
         DrawText("Score", 350, 15, 38, WHITE);
         DrawRectangleRounded({320, 55, 170, 60}, 0.3, 6, tetoGrey);
-        char *puntaje = new char[10];
-        sprintf(puntaje, "%d", juego.puntaje);
-        Vector2 tamTexto = MeasureTextEx(GetFontDefault(), puntaje, 38, 0);
-        DrawText(puntaje, 320 + (170 - tamTexto.x) / 2, 65, 38, WHITE);
 
-        DrawText("Next", 365, 175, 38, WHITE);
-        DrawRectangleRounded({320, 215, 170, 180}, 0.3, 6, tetoGrey);
+        char puntajeTexto[10];
+        sprintf(puntajeTexto, "%d", juego.puntaje);
+        Vector2 tamTexto = MeasureTextEx(GetFontDefault(), puntajeTexto, 38, 0);
+        DrawText(puntajeTexto, 320 + (170 - tamTexto.x) / 2, 65, 38, WHITE);
+
+        DrawText("Next", 365, 145, 38, WHITE);
+        DrawRectangleRounded({320, 190, 170, 150}, 0.15, 6, tetoGrey);
+
+        Juego_Dibujar(&juego);
+
         if (juego.gameOver)
         {
-            DrawText("Game Over", 320, 450, 35, WHITE);
+            DrawText("GAME OVER", 320, 450, 28, WHITE);
+            DrawText("A Guardar Puntaje", 315, 490, 19, WHITE);
+            DrawText("S Reiniciar", 315, 510, 19, WHITE);
         }
 
-        juego.Dibujar();
         EndDrawing();
-        delete[] puntaje;
     }
 
+    Juego_Destruir(&juego);
     CloseWindow();
     return 0;
 }

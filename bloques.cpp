@@ -1,222 +1,90 @@
 #include "bloque.h"
 #include "posicion.h"
 
-class LBloque : public Bloque
+Bloque CrearLBloque()
 {
-public:
-    LBloque()
-    {
-        id = 1;
-        celdas[0] = {
-            Posicion(0, 2),
-            Posicion(1, 0),
-            Posicion(1, 1),
-            Posicion(1, 2),
-        };
-        celdas[1] = {
-            Posicion(0, 1),
-            Posicion(1, 1),
-            Posicion(2, 1),
-            Posicion(2, 2),
-        };
-        celdas[2] = {
-            Posicion(1, 0),
-            Posicion(1, 1),
-            Posicion(1, 2),
-            Posicion(2, 0),
-        };
-        celdas[3] = {
-            Posicion(0, 0),
-            Posicion(0, 1),
-            Posicion(1, 1),
-            Posicion(2, 1),
-        };
-        Mover(0, 3);
-    }
-};
+    Bloque b;
+    Bloque_InicializarBase(&b);
+    b.id = 1;
+    b.celdas[0] = {{0, 2}, {1, 0}, {1, 1}, {1, 2}};
+    b.celdas[1] = {{0, 1}, {1, 1}, {2, 1}, {2, 2}};
+    b.celdas[2] = {{1, 0}, {1, 1}, {1, 2}, {2, 0}};
+    b.celdas[3] = {{0, 0}, {0, 1}, {1, 1}, {2, 1}};
+    Bloque_Mover(&b, 0, 3);
+    return b;
+}
 
-class JBloque : public Bloque
+Bloque CrearJBloque()
 {
-public:
-    JBloque()
-    {
-        id = 2;
-        celdas[0] = {
-            Posicion(0, 0),
-            Posicion(1, 0),
-            Posicion(1, 1),
-            Posicion(1, 2),
-        };
-        celdas[1] = {
-            Posicion(0, 1),
-            Posicion(0, 2),
-            Posicion(1, 1),
-            Posicion(2, 1),
-        };
-        celdas[2] = {
-            Posicion(1, 0),
-            Posicion(1, 1),
-            Posicion(1, 2),
-            Posicion(2, 2),
-        };
-        celdas[3] = {
-            Posicion(0, 1),
-            Posicion(1, 1),
-            Posicion(2, 0),
-            Posicion(2, 1),
-        };
-        Mover(0, 3);
-    }
-};
+    Bloque b;
+    Bloque_InicializarBase(&b);
+    b.id = 2;
+    b.celdas[0] = {{0, 0}, {1, 0}, {1, 1}, {1, 2}};
+    b.celdas[1] = {{0, 1}, {0, 2}, {1, 1}, {2, 1}};
+    b.celdas[2] = {{1, 0}, {1, 1}, {1, 2}, {2, 2}};
+    b.celdas[3] = {{0, 1}, {1, 1}, {2, 0}, {2, 1}};
+    Bloque_Mover(&b, 0, 3);
+    return b;
+}
 
-class IBloque : public Bloque
+Bloque CrearIBloque()
 {
-public:
-    IBloque()
-    {
-        id = 3;
-        celdas[0] = {
-            Posicion(1, 0),
-            Posicion(1, 1),
-            Posicion(1, 2),
-            Posicion(1, 3),
-        };
-        celdas[1] = {
-            Posicion(0, 2),
-            Posicion(1, 2),
-            Posicion(2, 2),
-            Posicion(3, 2),
-        };
-        celdas[2] = {
-            Posicion(2, 0),
-            Posicion(2, 1),
-            Posicion(2, 2),
-            Posicion(2, 3),
-        };
-        celdas[3] = {
-            Posicion(0, 1),
-            Posicion(1, 1),
-            Posicion(2, 1),
-            Posicion(3, 1),
-        };
-        Mover(-1, 3);
-    }
-};
+    Bloque b;
+    Bloque_InicializarBase(&b);
+    b.id = 3;
+    b.celdas[0] = {{1, 0}, {1, 1}, {1, 2}, {1, 3}};
+    b.celdas[1] = {{0, 2}, {1, 2}, {2, 2}, {3, 2}};
+    b.celdas[2] = {{2, 0}, {2, 1}, {2, 2}, {2, 3}};
+    b.celdas[3] = {{0, 1}, {1, 1}, {2, 1}, {3, 1}};
+    Bloque_Mover(&b, -1, 3); 
+    return b;
+}
 
-class OBloque : public Bloque
+Bloque CrearOBloque()
 {
-public:
-    OBloque()
-    {
-        id = 4;
-        celdas[0] = {
-            Posicion(0, 0),
-            Posicion(0, 1),
-            Posicion(1, 0),
-            Posicion(1, 1),
-        };
-        Mover(0, 4);
-    }
-};
+    Bloque b;
+    Bloque_InicializarBase(&b);
+    b.id = 4;
+    b.celdas[0] = {{0, 0}, {0, 1}, {1, 0}, {1, 1}};
+    Bloque_Mover(&b, 0, 4);
+    return b;
+}
 
-class SBloque : public Bloque
+Bloque CrearSBloque()
 {
-public:
-    SBloque()
-    {
-        id = 5;
-        celdas[0] = {
-            Posicion(0, 1),
-            Posicion(0, 2),
-            Posicion(1, 0),
-            Posicion(1, 1),
-        };
-        celdas[1] = {
-            Posicion(0, 1),
-            Posicion(1, 1),
-            Posicion(1, 2),
-            Posicion(2, 2),
-        };
-        celdas[2] = {
-            Posicion(1, 1),
-            Posicion(1, 2),
-            Posicion(2, 0),
-            Posicion(2, 1),
-        };
-        celdas[3] = {
-            Posicion(0, 0),
-            Posicion(1, 0),
-            Posicion(1, 1),
-            Posicion(2, 1),
-        };
-        Mover(0, 3);
-    }
-};
+    Bloque b;
+    Bloque_InicializarBase(&b);
+    b.id = 5;
+    b.celdas[0] = {{0, 1}, {0, 2}, {1, 0}, {1, 1}};
+    b.celdas[1] = {{0, 1}, {1, 1}, {1, 2}, {2, 2}};
+    b.celdas[2] = {{1, 1}, {1, 2}, {2, 0}, {2, 1}};
+    b.celdas[3] = {{0, 0}, {1, 0}, {1, 1}, {2, 1}};
+    Bloque_Mover(&b, 0, 3);
+    return b;
+}
 
-class TBloque : public Bloque
+Bloque CrearTBloque()
 {
-public:
-    TBloque()
-    {
-        id = 6;
-        celdas[0] = {
-            Posicion(0, 1),
-            Posicion(1, 0),
-            Posicion(1, 1),
-            Posicion(1, 2),
-        };
-        celdas[1] = {
-            Posicion(0, 1),
-            Posicion(1, 1),
-            Posicion(1, 2),
-            Posicion(2, 1),
-        };
-        celdas[2] = {
-            Posicion(1, 0),
-            Posicion(1, 1),
-            Posicion(1, 2),
-            Posicion(2, 1),
-        };
-        celdas[3] = {
-            Posicion(0, 1),
-            Posicion(1, 0),
-            Posicion(1, 1),
-            Posicion(2, 1),
-        };
-        Mover(0, 3);
-    }
-};
+    Bloque b;
+    Bloque_InicializarBase(&b);
+    b.id = 6;
+    b.celdas[0] = {{0, 1}, {1, 0}, {1, 1}, {1, 2}};
+    b.celdas[1] = {{0, 1}, {1, 1}, {1, 2}, {2, 1}};
+    b.celdas[2] = {{1, 0}, {1, 1}, {1, 2}, {2, 1}};
+    b.celdas[3] = {{0, 1}, {1, 0}, {1, 1}, {2, 1}};
+    Bloque_Mover(&b, 0, 3);
+    return b;
+}
 
-class ZBloque : public Bloque
+Bloque CrearZBloque()
 {
-public:
-    ZBloque()
-    {
-        id = 7;
-        celdas[0] = {
-            Posicion(0, 0),
-            Posicion(0, 1),
-            Posicion(1, 1),
-            Posicion(1, 2),
-        };
-        celdas[1] = {
-            Posicion(0, 2),
-            Posicion(1, 1),
-            Posicion(1, 2),
-            Posicion(2, 1),
-        };
-        celdas[2] = {
-            Posicion(1, 0),
-            Posicion(1, 1),
-            Posicion(2, 1),
-            Posicion(2, 2),
-        };
-        celdas[3] = {
-            Posicion(0, 1),
-            Posicion(1, 0),
-            Posicion(1, 1),
-            Posicion(2, 0),
-        };
-        Mover(0, 3);
-    }
-};
+    Bloque b;
+    Bloque_InicializarBase(&b);
+    b.id = 7;
+    b.celdas[0] = {{0, 0}, {0, 1}, {1, 1}, {1, 2}};
+    b.celdas[1] = {{0, 2}, {1, 1}, {1, 2}, {2, 1}};
+    b.celdas[2] = {{1, 0}, {1, 1}, {2, 1}, {2, 2}};
+    b.celdas[3] = {{0, 1}, {1, 0}, {1, 1}, {2, 0}};
+    Bloque_Mover(&b, 0, 3);
+    return b;
+}

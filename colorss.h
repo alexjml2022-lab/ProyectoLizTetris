@@ -10,6 +10,7 @@ namespace TetoColores
     static const Color tetoPink = {237, 167, 186, 255};
     static const Color tetoFiusha = {217, 36, 213, 255};
     static const Color tetoGrey = {63, 71, 80, 255};
+    static const Color tetoDark = { 30, 30, 30, 255 };
 }
 namespace MikuColores
 {

@@ -1,10 +1,7 @@
 #pragma once
 
-class Posicion
+struct Posicion
 {
-public:
-    Posicion(int reng, int col);
     int reng;
     int col;
 };
-

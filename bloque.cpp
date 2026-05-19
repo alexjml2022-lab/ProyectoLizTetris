@@ -1,55 +1,59 @@
 #include "bloque.h"
-using namespace std;
-Bloque::Bloque()
+
+void Bloque_InicializarBase(Bloque *b)
 {
-    tamCel = 30;
-    rotaCion = 0;
-    colors = GetCellColors();
-    rengOffset = 0;
-    colOffset = 0;
+    b->tamCel = 30;
+    b->rotaCion = 0;
+    b->colors = GetCellColors();
+    b->rengOffset = 0;
+    b->colOffset = 0;
 }
 
-void Bloque::Dibujar(int offsetX, int offsetY)
+void Bloque_Dibujar(const Bloque *b, int offsetX, int offsetY)
 {
-    vector<Posicion> tiles = GetCellPosicion();
+    vector<Posicion> tiles = Bloque_GetCellPosicion(b);
     for (Posicion item : tiles)
     {
-        DrawRectangle(item.col * tamCel + offsetX, item.reng * tamCel + offsetY, tamCel - 1, tamCel - 1, colors[id]);
+        DrawRectangle(item.col * b->tamCel + offsetX, item.reng * b->tamCel + offsetY, b->tamCel - 1, b->tamCel - 1, b->colors[b->id]);
     }
 }
 
-void Bloque::Mover(int rengs, int cols)
+void Bloque_Mover(Bloque *b, int rengs, int cols)
 {
-    rengOffset += rengs;
-    colOffset += cols;
+    b->rengOffset += rengs;
+    b->colOffset += cols;
 }
 
-vector<Posicion> Bloque::GetCellPosicion()
+vector<Posicion> Bloque_GetCellPosicion(const Bloque *b)
 {
-    vector<Posicion> tiles = celdas[rotaCion];
+    auto it = b->celdas.find(b->rotaCion);
+    if (it == b->celdas.end())
+        return {};
+
+    vector<Posicion> tiles = it->second;
     vector<Posicion> moverTiles;
     for (Posicion item : tiles)
     {
-        Posicion nPos = Posicion(item.reng + rengOffset, item.col + colOffset);
+        Posicion nPos = {item.reng + b->rengOffset, item.col + b->colOffset};
         moverTiles.push_back(nPos);
     }
     return moverTiles;
 }
 
-void Bloque::Rotar()
+void Bloque_Rotar(Bloque *b)
 {
-    rotaCion++;
-    if (rotaCion == (int)celdas.size())
+    b->rotaCion++;
+    if (b->rotaCion == (int)b->celdas.size())
     {
-        rotaCion = 0;
+        b->rotaCion = 0;
     }
 }
 
-void Bloque::KyaRotacion()
+void Bloque_KyaRotacion(Bloque *b)
 {
-    rotaCion--;
-    if (rotaCion == -1)
+    b->rotaCion--;
+    if (b->rotaCion == -1)
     {
-        rotaCion = celdas.size() - 1;
+        b->rotaCion = (int)b->celdas.size() - 1;
     }
 }

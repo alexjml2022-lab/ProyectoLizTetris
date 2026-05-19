@@ -3,104 +3,88 @@
 #include "colors.h"
 using namespace std;
 
-Grid::Grid()
+void Grid_Iniciar(Grid *g)
 {
-    numRens = 20;
-    numCols = 10;
-    tamCelda = 30;
-    Iniciar();
-    colors = GetCellColors();
+    g->numRens = 20;
+    g->numCols = 10;
+    g->tamCelda = 30;
+    Grid_IniciarMatriz(g);
+    g->colors = GetCellColors();
 }
 
-void Grid::Iniciar()
+void Grid_IniciarMatriz(Grid *g)
 {
-    grid = new int *[numRens];
-    for (int reng = 0; reng < numRens; reng++)
+    g->grid = new int *[g->numRens];
+    for (int reng = 0; reng < g->numRens; reng++)
     {
-        grid[reng] = new int[numCols];
-        for (int col = 0; col < numCols; col++)
+        g->grid[reng] = new int[g->numCols];
+        for (int col = 0; col < g->numCols; col++)
         {
-            grid[reng][col] = 0;
+            g->grid[reng][col] = 0; // Inicialización limpia
         }
     }
 }
-Grid::~Grid()
+
+void Grid_BorrarMat(Grid *g)
 {
-    BorrarMat();
-}
-void Grid::BorrarMat()
-{
-    for (int i = 0; i < numRens; ++i)
+    if (g->grid != nullptr)
     {
-        delete[] grid[i]; // Libera las columnas de cada fila
+        for (int i = 0; i < g->numRens; ++i)
+        {
+            delete[] g->grid[i];
+        }
+        delete[] g->grid;
+        g->grid = nullptr;
     }
-    delete[] grid;
 }
 
-void Grid::Imprimir()
+void Grid_Imprimir(Grid *g)
 {
-    for (int rens = 0; rens < numRens; rens++)
+    for (int rens = 0; rens < g->numRens; rens++)
     {
-        for (int cols = 0; cols < numCols; cols++)
+        for (int cols = 0; cols < g->numCols; cols++)
         {
-            cout << grid[rens][cols] << " ";
+            cout << g->grid[rens][cols] << " ";
         }
         cout << endl;
     }
 }
 
-void Grid::Dibujar()
+void Grid_Dibujar(Grid *g)
 {
-    for (int reng = 0; reng < numRens; reng++)
+    for (int reng = 0; reng < g->numRens; reng++)
     {
-        for (int cols = 0; cols < numCols; cols++)
+        for (int cols = 0; cols < g->numCols; cols++)
         {
-            int ValCeld = grid[reng][cols];
-            DrawRectangle(cols * tamCelda + 11, reng * tamCelda + 11, tamCelda - 1, tamCelda - 1, colors[ValCeld]);
+            int ValCeld = g->grid[reng][cols];
+            DrawRectangle(cols * g->tamCelda + 11, reng * g->tamCelda + 11, g->tamCelda - 1, g->tamCelda - 1, g->colors[ValCeld]);
         }
     }
 }
 
-bool Grid::IsCellOutSide(int reng, int col)
+bool Grid_IsCellOutSide(Grid *g, int reng, int col)
 {
-    if (reng >= 0 && reng < numRens && col >= 0 && col < numCols)
+    if (reng >= 0 && reng < g->numRens && col >= 0 && col < g->numCols)
     {
         return false;
     }
     return true;
 }
 
-bool Grid::IsCellEmpty(int reng, int col)
+bool Grid_IsCellEmpty(Grid *g, int reng, int col)
 {
-    if (reng >= 0 && reng < numRens && col >= 0 && col < numCols) {
-        return grid[reng][col] == 0;
+    if (reng >= 0 && reng < g->numRens && col >= 0 && col < g->numCols)
+    {
+        return g->grid[reng][col] == 0;
     }
     return false;
 }
 
-int Grid::limpiarTodoRengs()
+bool Grid_IsRowFull(Grid *g, int reng)
 {
-    int com = 0;
-    for (int reng = numRens - 1; reng >= 0; reng--)
+    for (int col = 0; col < g->numCols; col++)
     {
-        if (IsRowFull(reng))
-        {
-            LimpiarReng(reng);
-            com++;
-        }
-        else if (com > 0)
-        {
-            MoverRengAbajo(reng, com);
-        }
-    }
-    return com;
-}
-
-bool Grid::IsRowFull(int reng)
-{
-    for (int col = 0; col < numCols; col++)
-    {
-        if (grid[reng][col] == 0)
+        if (g->grid[reng][col] == 0)
         {
             return false;
         }
@@ -108,19 +92,37 @@ bool Grid::IsRowFull(int reng)
     return true;
 }
 
-void Grid::LimpiarReng(int reng)
+void Grid_LimpiarReng(Grid *g, int reng)
 {
-    for (int col = 0; col < numCols; col++)
+    for (int col = 0; col < g->numCols; col++)
     {
-        grid[reng][col] = 0;
+        g->grid[reng][col] = 0;
     }
 }
 
-void Grid::MoverRengAbajo(int reng, int numRengs)
+void Grid_MoverRengAbajo(Grid *g, int reng, int numRengs)
 {
-    for (int col = 0; col < numCols; col++)
+    for (int col = 0; col < g->numCols; col++)
     {
-        grid[reng + numRengs][col] = grid[reng][col];
-        grid[reng][col] = 0;
+        g->grid[reng + numRengs][col] = g->grid[reng][col];
+        g->grid[reng][col] = 0;
     }
+}
+
+int Grid_LimpiarTodoRengs(Grid *g)
+{
+    int com = 0;
+    for (int reng = g->numRens - 1; reng >= 0; reng--)
+    {
+        if (Grid_IsRowFull(g, reng))
+        {
+            Grid_LimpiarReng(g, reng);
+            com++;
+        }
+        else if (com > 0)
+        {
+            Grid_MoverRengAbajo(g, reng, com);
+        }
+    }
+    return com;
 }
