@@ -80,10 +80,9 @@ void Juego_Dibujar(Juego *j)
 void Juego_HandleInput(Juego *j)
 {
     int key = GetKeyPressed();
-    if (j->gameOver && key == KEY_S)
+    if (j->gameOver)
     {
         j->gameOver = false;
-        Juego_Reset(j);
     }
     switch (key)
     {
