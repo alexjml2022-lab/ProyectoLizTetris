@@ -31,6 +31,9 @@ int main()
     const int screenWidth = 500;
     const int screenHeight = 620;
     InitWindow(screenWidth, screenHeight, "Tetris");
+    Image icono = LoadImage("public/tetoPNG.png");
+    SetWindowIcon(icono);
+    UnloadImage(icono);
     SetTargetFPS(60);
 
     Juego juego;
