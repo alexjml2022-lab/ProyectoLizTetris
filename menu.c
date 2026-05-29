@@ -7,16 +7,16 @@
 // Función auxiliar para dibujar texto centrado en un botón
 void DrawTextCentered(const char *text, Rectangle btn, int fontSize, Color color)
 {
-    int textWidth = MeasureText(text, fontSize);     
-    int textX = btn.x + (btn.width - textWidth) / 2; 
-    int textY = btn.y + (btn.height - fontSize) / 2; 
+    int textWidth = MeasureText(text, fontSize);
+    int textX = btn.x + (btn.width - textWidth) / 2;
+    int textY = btn.y + (btn.height - fontSize) / 2;
     DrawText(text, textX, textY, fontSize, color);
 }
 
 // Función auxiliar para dibujar texto centrado en la pantalla
 void DrawTitleCentered(const char *text, int y, int fontSize, Color color)
 {
-    int textWidth = MeasureText(text, fontSize); 
+    int textWidth = MeasureText(text, fontSize);
     int textX = (GetScreenWidth() - textWidth) / 2;
     DrawText(text, textX, y, fontSize, color);
 }
@@ -62,7 +62,7 @@ Pantalla updatescreen(void)
     FILE *fileRecords = NULL;
     char temp_name[20];
     int temp_puntuation;
-    char bufferTexto[50]; 
+    char bufferTexto[50];
 
     BeginDrawing();
     DrawTexture(fondoMenu, 0, 0, WHITE);
@@ -72,7 +72,7 @@ Pantalla updatescreen(void)
     // ----------------- MENU -----------------
     switch (pantallaActual)
     {
-    case MENU://------------------------Menu--------------------------
+    case MENU: //------------------------Menu--------------------------
         // TITULO
         DrawTitleCentered("TETRIS", 120, 60, WHITE);
 
@@ -133,7 +133,7 @@ Pantalla updatescreen(void)
 
         break;
 
-    case JUEGO://--------------Juego------------------
+    case JUEGO: //--------------Juego------------------
         // TITULO
         DrawTitleCentered("JUGAR", 120, 60, WHITE);
 
@@ -194,28 +194,27 @@ Pantalla updatescreen(void)
         DrawText("REGRESAR", botonRegresar.x + (botonRegresar.width - anchoRegresar) / 2, botonRegresar.y + 15, 20, BLACK);
         DrawText("SALIR", botonSalir.x + (botonSalir.width - anchoSalir) / 2, botonSalir.y + 15, 20, BLACK);
 
-        // --- NUEVA IMPLEMENTACIÓN EN EL CASO RECORS ---
         fileRecords = fopen("puntuaciones.txt", "r");
         if (fileRecords == NULL)
         {
-            DrawTitleCentered("No hay records guardados aun.", screenHeight / 2, 20, MAROON);
+            DrawTitleCentered("Che malo, todavia no tienes records.", screenHeight / 2, 20, MAROON);
         }
         else
         {
             int filaY = 160; // Dónde empieza el primer renglón de texto
             int contador = 1;
 
-            // El bucle fscanf que ya conoces, adaptado para la pantalla gráfica
-            while (fscanf(fileRecords, "%d %19s", &temp_puntuation, temp_name) == 2 && contador <= 5)
+            // El bucle fscanf adaptado para la pantalla gráfica - que imprime de dos en dos (puntuación y nombre)
+            while (fscanf(fileRecords, "%d %19s", &temp_puntuation, temp_name) == 2 && contador <= 10) // Limitar a los 10 mejores
             {
                 // Juntamos el entero y la cadena en un solo buffer formateado
                 snprintf(bufferTexto, sizeof(bufferTexto), "%d. %-12s ...... %d pts", contador, temp_name, temp_puntuation);
-                
+
                 // Lo dibujamos en la pantalla de Raylib
                 DrawText(bufferTexto, screenWidth / 2 - 140, filaY, 20, RAYWHITE);
-                
-                filaY += 35; // Bajamos 35 píxeles para el siguiente jugador de la lista
-                contador++;
+
+                filaY += 35; // Espacio entre renglones
+                contador++; // para controlar cuantos records mostramos
             }
             fclose(fileRecords);
         }
@@ -254,9 +253,9 @@ Pantalla updatescreen(void)
 
     EndDrawing();
 
-    // 4. Limpieza y cierre
+    //Limpieza y cierre
     UnloadTexture(fondoMenu);
     CloseWindow();
 
     return pantallaActual;
-}// luis estuvo aqui
+}//luis estubo aqui
