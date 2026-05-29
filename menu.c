@@ -1,18 +1,22 @@
 #include "raylib.h"
 #include "menu.h"
+#include "recors.h"
+#include <stdio.h>
+#include <stdlib.h>
+
 // Función auxiliar para dibujar texto centrado en un botón
 void DrawTextCentered(const char *text, Rectangle btn, int fontSize, Color color)
 {
-    int textWidth = MeasureText(text, fontSize);     // Se utiliza la función MeasureText() de Raylib. Esto mide cuántos píxeles ocupa el texto y permite colocarlo exactamente en el centro del botón, sin importar lo que escribas.
-    int textX = btn.x + (btn.width - textWidth) / 2; // En lugar de coordenadas fijas, ahora se usa el ancho de la ventana
-    int textY = btn.y + (btn.height - fontSize) / 2; // para calcular el centro exacto: (screenWidth - buttonWidth) / 2.
+    int textWidth = MeasureText(text, fontSize);     
+    int textX = btn.x + (btn.width - textWidth) / 2; 
+    int textY = btn.y + (btn.height - fontSize) / 2; 
     DrawText(text, textX, textY, fontSize, color);
 }
 
 // Función auxiliar para dibujar texto centrado en la pantalla
 void DrawTitleCentered(const char *text, int y, int fontSize, Color color)
 {
-    int textWidth = MeasureText(text, fontSize); // Se utiliza la función MeasureText() de Raylib. Esto mide cuántos píxeles ocupa el texto y permite colocarlo exactamente en el centro del botón, sin importar lo que escribas.
+    int textWidth = MeasureText(text, fontSize); 
     int textX = (GetScreenWidth() - textWidth) / 2;
     DrawText(text, textX, y, fontSize, color);
 }
@@ -31,17 +35,14 @@ Pantalla updatescreen(void)
     // Cargamos la textura
     Texture2D fondoMenu = LoadTexture("fondo.png");
 
-    // Definimos la posición y tamaño del boton jugar
+    // Botones
     Rectangle botonJugar = {screenWidth / 2.0f - 100, screenHeight / 2.0f - 25, 200, 50};
 
-    // botón regresar un poco más abajo para diferenciarlo
-    Rectangle botonRegresar = {screenWidth / 2.0f - 100, screenHeight / 2.0f + 50, 200, 50};
+    Rectangle botonRegresar = {screenWidth / 2.0f - 100, screenHeight / 2.0f + 120, 200, 50};
 
-    // Definimos la posición y tamaño del boton de los recors
     Rectangle botonRecors = {screenWidth / 2.0f - 100, screenHeight / 2.0f + 50, 200, 50};
 
-    // Definimos la posición y tamaño del boton de los SALIDA
-    Rectangle botonSalir = {screenWidth / 2.0f - 100, screenHeight / 2.0f + 125, 200, 50};
+    Rectangle botonSalir = {screenWidth / 2.0f - 100, screenHeight / 2.0f + 195, 200, 50};
 
     // Variables independientes para saber si el ratón está sobre cada botón
     bool ratonSobreJugar = false;
@@ -57,6 +58,12 @@ Pantalla updatescreen(void)
     int anchoRecors = MeasureText("RECORS", 20);
     int anchoSalir = MeasureText("SALIR", 20);
 
+    // Variables locales para la lectura y renderizado del archivo de texto
+    FILE *fileRecords = NULL;
+    char temp_name[20];
+    int temp_puntuation;
+    char bufferTexto[50]; 
+
     BeginDrawing();
     DrawTexture(fondoMenu, 0, 0, WHITE);
     ClearBackground(RAYWHITE);
@@ -65,7 +72,7 @@ Pantalla updatescreen(void)
     // ----------------- MENU -----------------
     switch (pantallaActual)
     {
-    case MENU:
+    case MENU://------------------------Menu--------------------------
         // TITULO
         DrawTitleCentered("TETRIS", 120, 60, WHITE);
 
@@ -110,7 +117,7 @@ Pantalla updatescreen(void)
             ratonSobreRecors = false;
         }
 
-        // ---------------SALIR------------------
+        // ---------------SALIR----------------------
         if (CheckCollisionPointRec(ratonPos, botonSalir))
         {
             ratonSobreSalir = true;
@@ -126,7 +133,7 @@ Pantalla updatescreen(void)
 
         break;
 
-    case JUEGO:
+    case JUEGO://--------------Juego------------------
         // TITULO
         DrawTitleCentered("JUGAR", 120, 60, WHITE);
 
@@ -173,9 +180,9 @@ Pantalla updatescreen(void)
 
         break;
 
-    case RECORS:
+    case RECORS: //------------------------Recors------------------
         // TITULO
-        DrawTitleCentered("TABLA DE RECORS", 120, 60, WHITE);
+        DrawTitleCentered("TABLA DE RECORS", 80, 50, WHITE);
 
         // DIBUJAR BOTONES
         DrawRectangleRec(botonRegresar, ratonSobreRegresar ? LIGHTGRAY : ORANGE);
@@ -187,8 +194,31 @@ Pantalla updatescreen(void)
         DrawText("REGRESAR", botonRegresar.x + (botonRegresar.width - anchoRegresar) / 2, botonRegresar.y + 15, 20, BLACK);
         DrawText("SALIR", botonSalir.x + (botonSalir.width - anchoSalir) / 2, botonSalir.y + 15, 20, BLACK);
 
-        // ---------------TABLA DE RECORS------------------
-        // Aqui va la logica de la tabla
+        // --- NUEVA IMPLEMENTACIÓN EN EL CASO RECORS ---
+        fileRecords = fopen("puntuaciones.txt", "r");
+        if (fileRecords == NULL)
+        {
+            DrawTitleCentered("No hay records guardados aun.", screenHeight / 2, 20, MAROON);
+        }
+        else
+        {
+            int filaY = 160; // Dónde empieza el primer renglón de texto
+            int contador = 1;
+
+            // El bucle fscanf que ya conoces, adaptado para la pantalla gráfica
+            while (fscanf(fileRecords, "%d %19s", &temp_puntuation, temp_name) == 2 && contador <= 5)
+            {
+                // Juntamos el entero y la cadena en un solo buffer formateado
+                snprintf(bufferTexto, sizeof(bufferTexto), "%d. %-12s ...... %d pts", contador, temp_name, temp_puntuation);
+                
+                // Lo dibujamos en la pantalla de Raylib
+                DrawText(bufferTexto, screenWidth / 2 - 140, filaY, 20, RAYWHITE);
+                
+                filaY += 35; // Bajamos 35 píxeles para el siguiente jugador de la lista
+                contador++;
+            }
+            fclose(fileRecords);
+        }
 
         // ---------------REGRESAR------------------
         if (CheckCollisionPointRec(ratonPos, botonRegresar))
@@ -228,5 +258,5 @@ Pantalla updatescreen(void)
     UnloadTexture(fondoMenu);
     CloseWindow();
 
-    return 0;
-} // luis estuvo aqui
+    return pantallaActual;
+}// luis estuvo aqui
