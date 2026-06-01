@@ -43,7 +43,6 @@ void Juego_Inicializar(Juego *j)
     j->sigBloque = Juego_GetRandomBlock(j);
     j->musica = LoadMusicStream("musica/tetoris.MP3");
     PlayMusicStream(j->musica);
-
 }
 
 void Juego_Destruir(Juego *j)
@@ -57,6 +56,11 @@ void Juego_Dibujar(Juego *j)
     Grid_Dibujar(&j->grid);
     Bloque_Dibujar(&j->actuBloque, 11, 11);
 
+    if (IsKeyPressed(KEY_LEFT_SHIFT))
+    {
+        Juego_Hold(j);
+    }
+    
     if (j->sigBloque.id == 3)
     {
         Bloque_Dibujar(&j->sigBloque, 255, 255);
@@ -70,7 +74,16 @@ void Juego_Dibujar(Juego *j)
         Bloque_Dibujar(&j->sigBloque, 270, 240);
     }
 }
-
+void Juego_Hold(Juego *j)
+{
+    if (j->hold == 0)
+    {
+        Juego hold;
+        hold.actuBloque = j->actuBloque;
+        j->actuBloque = j->sigBloque;
+        j->hold = 1;
+    }
+}
 void Juego_HandleInput(Juego *j)
 {
     int key = GetKeyPressed();

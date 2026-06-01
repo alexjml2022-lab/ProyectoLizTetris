@@ -11,6 +11,7 @@ struct Juego
     vector<Bloque> bloques;
     Bloque actuBloque;
     Bloque sigBloque;
+    int hold = 0;
     bool gameOver;
     int puntaje;
     Music musica;
@@ -19,6 +20,7 @@ struct Juego
 void Juego_Inicializar(Juego *j);
 void Juego_Destruir(Juego *j);
 void Juego_Dibujar(Juego *j);
+void Juego_Hold(Juego *j);
 void Juego_HandleInput(Juego *j);
 void Juego_MoverAbajo(Juego *j);
 void Juego_MoverIzquierda(Juego *j);
