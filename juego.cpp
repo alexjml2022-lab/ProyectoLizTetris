@@ -41,21 +41,15 @@ void Juego_Inicializar(Juego *j)
     j->bloques = Juego_GetAllBlocks();
     j->actuBloque = Juego_GetRandomBlock(j);
     j->sigBloque = Juego_GetRandomBlock(j);
-
-    InitAudioDevice();
     j->musica = LoadMusicStream("musica/tetoris.MP3");
     PlayMusicStream(j->musica);
-    j->rotateSound = LoadSound("");
-    j->clearSound = LoadSound("");
+
 }
 
 void Juego_Destruir(Juego *j)
 {
     Grid_BorrarMat(&j->grid);
-    UnloadSound(j->clearSound);
-    UnloadSound(j->rotateSound);
     UnloadMusicStream(j->musica);
-    CloseAudioDevice();
 }
 
 void Juego_Dibujar(Juego *j)
@@ -161,10 +155,6 @@ void Juego_RotarBloque(Juego *j)
         {
             Bloque_KyaRotacion(&j->actuBloque);
         }
-        else
-        {
-            PlaySound(j->rotateSound);
-        }
     }
 }
 
@@ -185,7 +175,6 @@ void Juego_TerryBlo(Juego *j)
     int lineas = Grid_LimpiarTodoRengs(&j->grid);
     if (lineas > 0)
     {
-        PlaySound(j->clearSound);
         if (lineas == oneL)
             j->puntaje += 100;
         else if (lineas == twoL)

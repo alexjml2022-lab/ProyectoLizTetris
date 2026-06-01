@@ -14,8 +14,6 @@ struct Juego
     bool gameOver;
     int puntaje;
     Music musica;
-    Sound rotateSound;
-    Sound clearSound;
 };
 
 void Juego_Inicializar(Juego *j);
