@@ -97,7 +97,8 @@ int main()
                 if (!juego.gameOver)
                 {
                     Juego_HandleInput(&juego);
-                    if (EventTriggered(0.2))
+                    double velAct = Juego_Niveles(&juego);
+                    if (EventTriggered(velAct))
                     {
                         Juego_MoverAbajo(&juego);
                     }

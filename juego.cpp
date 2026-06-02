@@ -38,6 +38,8 @@ void Juego_Inicializar(Juego *j)
     Grid_Iniciar(&j->grid);
     j->gameOver = false;
     j->puntaje = 0;
+    j->lineasG = 0;
+    j->nivel = 0;
     j->bloques = Juego_GetAllBlocks();
     j->actuBloque = Juego_GetRandomBlock(j);
     j->sigBloque = Juego_GetRandomBlock(j);
@@ -60,7 +62,7 @@ void Juego_Dibujar(Juego *j)
     {
         Juego_Hold(j);
     }
-    
+
     if (j->sigBloque.id == 3)
     {
         Bloque_Dibujar(&j->sigBloque, 255, 255);
@@ -105,6 +107,10 @@ void Juego_HandleInput(Juego *j)
         break;
     case KEY_UP:
         Juego_RotarBloque(j);
+        break;
+
+    case KEY_SPACE:
+        Juego_HardDrop(j);
         break;
     }
 }
@@ -186,13 +192,16 @@ void Juego_TerryBlo(Juego *j)
     j->sigBloque = Juego_GetRandomBlock(j);
 
     int lineas = Grid_LimpiarTodoRengs(&j->grid);
+    j->lineasG += lineas;
+
+    j->nivel = j->lineasG / 10;
     if (lineas > 0)
     {
         if (lineas == oneL)
             j->puntaje += 100;
         else if (lineas == twoL)
             j->puntaje += 300;
-        else if (lineas == threeL)
+        else if (lineas >= threeL)
             j->puntaje += 500;
     }
 }
@@ -218,4 +227,29 @@ void Juego_Reset(Juego *j)
     j->actuBloque = Juego_GetRandomBlock(j);
     j->sigBloque = Juego_GetRandomBlock(j);
     j->puntaje = 0;
+    j->lineasG = 0;
+    j->nivel = 0;
+}
+
+double Juego_Niveles(Juego *j)
+{
+    double velocidad = 0.5 - (j->nivel * 0.05);
+    if (velocidad < 0.05)
+    {
+        velocidad = 0.05;
+    }
+    return velocidad;
+}
+
+void Juego_HardDrop(Juego *j)
+{
+    if (!j->gameOver)
+    {
+        while (!Juego_IsBlockOutSide(j) && Juego_coliBloque(j))
+        {
+            Bloque_Mover(&j->actuBloque, 1, 0);
+        }
+        Bloque_Mover(&j->actuBloque, -1, 0);
+        Juego_TerryBlo(j);
+    }
 }

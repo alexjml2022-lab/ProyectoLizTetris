@@ -15,6 +15,8 @@ struct Juego
     bool gameOver;
     int puntaje;
     Music musica;
+    int lineasG;
+    int nivel;
 };
 
 void Juego_Inicializar(Juego *j);
@@ -30,3 +32,5 @@ void Juego_RotarBloque(Juego *j);
 void Juego_TerryBlo(Juego *j);
 bool Juego_coliBloque(Juego *j);
 void Juego_Reset(Juego *j);
+double Juego_Niveles(Juego *j);
+void Juego_HardDrop(Juego *j);
