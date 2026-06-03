@@ -219,7 +219,7 @@ int main()
                 char bufferNombre[50];
                 char bufferPuntos[50];
 
-                while (fscanf(fileRecords, "%d %19s", &temp_puntuation, temp_name) == 2 && contador <= 5)
+                while (fscanf(fileRecords, "%d %19s", &temp_puntuation, temp_name) == 2 && contador <= 15)
                 {
                     snprintf(bufferNombre, sizeof(bufferNombre), "%d. %s", contador, temp_name);
                     snprintf(bufferPuntos, sizeof(bufferPuntos), "%d pts", temp_puntuation);
