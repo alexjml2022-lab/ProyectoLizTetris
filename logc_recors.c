@@ -31,30 +31,48 @@ void loadPuntuation()
     FILE *file = fopen("puntuaciones.txt", "r");
     if (file == NULL)
     {
-        printf("Error al abrir el archivo (Es posible que aun no haya puntuaciones guardadas).\n");
+        printf("Error al abrir el archivo.\n");
         return;
     }
 
-    // Variables temporales para leer el historial línea por línea
-    char temp_name[20];
-    int temp_puntuation;
-    int contador = 1;
+    // Array para guardar a todos los jugadores del archivo
+    Jugador lista_jugadores[MAX_JUGADORES];
+    int contador = 0;
 
-    printf("\n=========================\n");
-    printf("   MEJORES PUNTUACIONES   \n");
-    printf("===========================\n");
-
-    // El bucle while continuará leyendo mientras fscanf encuentre pares de (int, string)
-    while (fscanf(file, "%d %19s", &temp_puntuation, temp_name) == 2)
+    //Guardamos todo el archivo en el array
+    while (fscanf(file, "%d %19s", &lista_jugadores[contador].puntuation, lista_jugadores[contador].name) == 2)
     {
-        printf("%d. Jugador: %-15s | Puntuacion: %d\n", contador, temp_name, temp_puntuation);
         contador++;
+        if (contador >= MAX_JUGADORES) break;
     }
     
-    if (contador == 1)
+    fclose(file);
+
+    if (contador == 0)
     {
         printf("El archivo de puntuaciones está vacío.\n");
+        return;
     }
+
+    for (int i = 0; i < contador - 1; i++)
+    {
+        for (int j = 0; j < contador - i - 1; j++)
+        {
+            if (lista_jugadores[j].puntuation < lista_jugadores[j + 1].puntuation)
+            {
+                Jugador temp = lista_jugadores[j];
+                lista_jugadores[j] = lista_jugadores[j + 1];
+                lista_jugadores[j + 1] = temp;
+            }
+        }
+    }
+
+    printf("\n   PUNTUACIONES MAS ALTAS   \n");
+    for (int i = 0; i < contador; i++)
+    {
+        printf("%d. Jugador: %-15s | Puntuacion: %d\n", i + 1, lista_jugadores[i].name, lista_jugadores[i].puntuation);
+    }
+}
 
     fclose(file);
 }
