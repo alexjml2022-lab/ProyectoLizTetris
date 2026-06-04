@@ -8,6 +8,6 @@ extern char player_name[20];
 // Prototipos de las funciones
 void setName(char *input_player);
 void saveGame(char *name, int player_puntuation);
-void loadPuntuation(void);
+//void loadPuntuation(void);
 
 #endif // RECORS_H

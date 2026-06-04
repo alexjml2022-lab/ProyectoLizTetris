@@ -3,13 +3,19 @@
 #include <iostream>
 #include "colorss.h"
 #include <stdio.h>
-
+#define MAX_JUGADORES 15
 using namespace TetoColores;
 enum estados
 {
     MENU,
     JUEGO,
     SCOREADD
+};
+
+struct Jugador
+{
+    int puntuation;
+    char name[20];
 };
 
 double ultimoTempo = 0.0;
@@ -133,7 +139,6 @@ int main()
             break;
 
         case SCOREADD:
-
             if (ratonSobreRegresar)
                 DrawRectangleRoundedLines(botonRegresar, 0.3f, 6, WHITE);
             if (ratonSobreRegresar && IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
@@ -210,27 +215,54 @@ int main()
             }
             else
             {
-                DrawTitleCentered("TOP 5 PUNTAJES", 50, 35, WHITE);
+                DrawTitleCentered("TOP 15 PUNTAJES", 5, 35, WHITE);
 
-                char temp_name[20];
-                int temp_puntuation;
-                int contador = 1;
-                int filaY = 150;
+                Jugador lista_jugadores[MAX_JUGADORES];
+                int contador = 0;
+
+                int filaY = 70;
                 char bufferNombre[50];
                 char bufferPuntos[50];
 
-                while (fscanf(fileRecords, "%d %19s", &temp_puntuation, temp_name) == 2 && contador <= 15)
+                while (fscanf(fileRecords, "%d %19s", &lista_jugadores[contador].puntuation, lista_jugadores[contador].name) == 2)
                 {
-                    snprintf(bufferNombre, sizeof(bufferNombre), "%d. %s", contador, temp_name);
-                    snprintf(bufferPuntos, sizeof(bufferPuntos), "%d pts", temp_puntuation);
+                    contador++;
+                    if (contador >= MAX_JUGADORES)
+                        break;
+                }
 
-                    DrawText(bufferNombre, 100, filaY, 22, WHITE);
-                    DrawText(bufferPuntos, 320, filaY, 22, WHITE);
+                if (contador == 0)
+                {
+                    DrawText("El archivo de puntuaciones está vacío.\n", 80, 200, 20, WHITE);
+                    return 0;
+                }
 
-                    filaY += 50;
+                fclose(fileRecords);
+                for (int i = 0; i < contador - 1; i++)
+                {
+                    for (int j = 0; j < contador - i - 1; j++)
+                    {
+                        if (lista_jugadores[j].puntuation < lista_jugadores[j + 1].puntuation)
+                        {
+                            Jugador temp = lista_jugadores[j];
+                            lista_jugadores[j] = lista_jugadores[j + 1];
+                            lista_jugadores[j + 1] = temp;
+                        }
+                    }
+                }
+                
+                int totalAMostrar = (contador < 15) ? contador : 15;
+                for (int i = 0; i < totalAMostrar; i++)
+                {
+                    snprintf(bufferNombre, sizeof(bufferNombre), "%d. %s", i + 1, lista_jugadores[i].name);
+                    snprintf(bufferPuntos, sizeof(bufferPuntos), "%d pts", lista_jugadores[i].puntuation);
+
+                    DrawText(bufferNombre, 100, filaY, 20, WHITE);
+                    DrawText(bufferPuntos, 320, filaY, 20, WHITE);
+
+                    filaY += 30;
                     contador++;
                 }
-                fclose(fileRecords);
             }
             DrawRectangleRounded(botonRegresar, 0.3f, 6, ratonSobreRegresar ? LIGHTGRAY : tetoGrey);
             DrawTextCentered("VOLVER", botonRegresar, 22, WHITE);

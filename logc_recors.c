@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
-
+#define MAX_JUGADORES 25
 char player_name[20];
 
 void setName(char *input_player)
@@ -25,7 +25,7 @@ void saveGame(char *name, int player_puntuation)
     fclose(file);
     printf("Felicidades,%s tu puntuacion ha sido guardada.\n", name);
 }
-
+/*
 void loadPuntuation()
 {
     FILE *file = fopen("puntuaciones.txt", "r");
@@ -72,7 +72,8 @@ void loadPuntuation()
     {
         printf("%d. Jugador: %-15s | Puntuacion: %d\n", i + 1, lista_jugadores[i].name, lista_jugadores[i].puntuation);
     }
-}
-
     fclose(file);
 }
+*/
+    
+
