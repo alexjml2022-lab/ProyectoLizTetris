@@ -11,7 +11,9 @@ struct Juego
     vector<Bloque> bloques;
     Bloque actuBloque;
     Bloque sigBloque;
-    int hold = 0;
+    Bloque bloqueHold;        // Guarda el bloque en reserva (NUEVO)
+    bool tieneBloqueHold;     // Indica si ya hay algo guardado (NUEVO)
+    int hold;                 // 0 = libre, 1 = bloqueado por este turno
     bool gameOver;
     int puntaje;
     Music musica;
