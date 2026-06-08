@@ -76,15 +76,53 @@ void Juego_Dibujar(Juego *j)
         Bloque_Dibujar(&j->sigBloque, 270, 240);
     }
 }
+// NUEVA FUNCIÓN nos servirá para obtener un bloque completamente limpio y centrado usando su id sin quitar el que estaba guardado en el hold
+Bloque Juego_ObtenerBloqueGay(int id)
+{
+    switch (id)
+    {
+        case 1: return CrearLBloque();
+        case 2: return CrearJBloque();
+        case 3: return CrearIBloque();
+        case 4: return CrearOBloque();
+        case 5: return CrearSBloque();
+        case 6: return CrearTBloque();
+        case 7: return CrearZBloque();
+        default: return CrearLBloque();
+    }
+}
+//
 void Juego_Hold(Juego *j)
 {
-    if (j->hold == 0)
+    
+// Si ya usó el hold con la pieza actual o el juego terminó, no hacer nada
+    if (j->hold == 1 || j->gameOver)
     {
-        Juego hold;
-        hold.actuBloque = j->actuBloque;
-        j->actuBloque = j->sigBloque;
-        j->hold = 1;
+        return;
     }
+
+    if (!j->tieneBloqueHold)
+    {
+        // CASO: El está vacío.
+        j->bloqueHold = Juego_ObtenerBloqueGay(j->actuBloque.id);
+        
+        j->actuBloque = j->sigBloque;
+
+        j->sigBloque = j->Juego_GetRandomBlock(j); //hacemos otro bloque
+        
+        j->tieneBloqueHold = true; //se llena el hold
+    }
+    else
+    {
+        // CASO: Ya había un bloque entonces los intercambiamos
+        int idActual = j->actuBloque.id;
+        
+        j->actuBloque = Juego_ObtenerBloqueGay(j->bloqueHold.id);
+        
+        j->bloqueHold = Juego_ObtenerBloqueGay(idActual);
+    }
+
+    j->hold = 1;
 }
 void Juego_HandleInput(Juego *j)
 {
