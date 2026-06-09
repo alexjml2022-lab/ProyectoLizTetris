@@ -55,7 +55,7 @@ int main()
     SetWindowIcon(icono);
     UnloadImage(icono);
     SetTargetFPS(60);
-
+    Texture2D fondoMenu = LoadTexture("public/fondo.png");
     Juego juego;
     bool juegoInicializado = false;
 
@@ -150,6 +150,7 @@ int main()
         }
         //---------------------Dibujos----------------------
         BeginDrawing();
+        DrawTexture(fondoMenu, 0, 0, WHITE);
         ClearBackground(tetoRed);
         if (estadoJ == MENU)
         {
@@ -286,6 +287,7 @@ int main()
     {
         Juego_Destruir(&juego);
     }
+    
     CloseAudioDevice();
     CloseWindow();
     return 0;

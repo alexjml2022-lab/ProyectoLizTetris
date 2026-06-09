@@ -57,7 +57,7 @@ void Grid_Dibujar(Grid *g)
         for (int cols = 0; cols < g->numCols; cols++)
         {
             int ValCeld = g->grid[reng][cols];
-            DrawRectangle(cols * g->tamCelda + 11, reng * g->tamCelda + 11, g->tamCelda - 1, g->tamCelda - 1, g->colors[ValCeld]);
+            DrawRectangle(cols * g->tamCelda + 11, reng * g->tamCelda + 11, g->tamCelda - .1, g->tamCelda - .1, g->colors[ValCeld]);
         }
     }
 }
