@@ -58,11 +58,6 @@ void Juego_Dibujar(Juego *j)
     Grid_Dibujar(&j->grid);
     Bloque_Dibujar(&j->actuBloque, 11, 11);
 
-    if (IsKeyPressed(KEY_LEFT_SHIFT))
-    {
-        Juego_Hold(j);
-    }
-
     if (j->sigBloque.id == 3)
     {
         Bloque_Dibujar(&j->sigBloque, 255, 255);
@@ -75,28 +70,52 @@ void Juego_Dibujar(Juego *j)
     {
         Bloque_Dibujar(&j->sigBloque, 270, 240);
     }
+
+    if (j->tieneBloqueHold == 1 && !j->gameOver)
+    {
+        if (j->bloqueHold.id == 3)
+        {
+            Bloque_Dibujar(&j->bloqueHold, 255, 470);
+        }
+        else if (j->bloqueHold.id == 4)
+        {
+            Bloque_Dibujar(&j->bloqueHold, 255, 450);
+        }
+        else
+        {
+            Bloque_Dibujar(&j->bloqueHold, 270, 465);
+        }
+    }
 }
 // NUEVA FUNCIÓN nos servirá para obtener un bloque completamente limpio y centrado usando su id sin quitar el que estaba guardado en el hold
 Bloque Juego_ObtenerBloqueGay(int id)
 {
     switch (id)
     {
-        case 1: return CrearLBloque();
-        case 2: return CrearJBloque();
-        case 3: return CrearIBloque();
-        case 4: return CrearOBloque();
-        case 5: return CrearSBloque();
-        case 6: return CrearTBloque();
-        case 7: return CrearZBloque();
-        default: return CrearLBloque();
+    case 1:
+        return CrearLBloque();
+    case 2:
+        return CrearJBloque();
+    case 3:
+        return CrearIBloque();
+    case 4:
+        return CrearOBloque();
+    case 5:
+        return CrearSBloque();
+    case 6:
+        return CrearTBloque();
+    case 7:
+        return CrearZBloque();
+    default:
+        return CrearLBloque();
     }
 }
 //
 void Juego_Hold(Juego *j)
 {
-    
-// Si ya usó el hold con la pieza actual o el juego terminó, no hacer nada
-    if (j->hold == 1 || j->gameOver)
+
+    // Si ya usó el hold con la pieza actual o el juego terminó, no hacer nada
+    if (j->gameOver || j->hold == 1)
     {
         return;
     }
@@ -105,25 +124,27 @@ void Juego_Hold(Juego *j)
     {
         // CASO: El está vacío.
         j->bloqueHold = Juego_ObtenerBloqueGay(j->actuBloque.id);
-        
+
         j->actuBloque = j->sigBloque;
 
-        j->sigBloque = j->Juego_GetRandomBlock(j); //hacemos otro bloque
-        
-        j->tieneBloqueHold = true; //se llena el hold
+        j->sigBloque = Juego_GetRandomBlock(j); // hacemos otro bloque
+
+        j->tieneBloqueHold = true; // se llena el hold
     }
     else
     {
+        j->hold = 0;
+
         // CASO: Ya había un bloque entonces los intercambiamos
         int idActual = j->actuBloque.id;
-        
+
         j->actuBloque = Juego_ObtenerBloqueGay(j->bloqueHold.id);
-        
+
         j->bloqueHold = Juego_ObtenerBloqueGay(idActual);
     }
-
     j->hold = 1;
 }
+
 void Juego_HandleInput(Juego *j)
 {
     int key = GetKeyPressed();
@@ -146,9 +167,11 @@ void Juego_HandleInput(Juego *j)
     case KEY_UP:
         Juego_RotarBloque(j);
         break;
-
     case KEY_SPACE:
         Juego_HardDrop(j);
+        break;
+    case KEY_LEFT_SHIFT:
+        Juego_Hold(j);
         break;
     }
 }
@@ -251,9 +274,11 @@ bool Juego_coliBloque(Juego *j)
     {
         if (Grid_IsCellEmpty(&j->grid, item.reng, item.col) == false)
         {
+            j->hold = 0;
             return false;
         }
     }
+
     return true;
 }
 
@@ -267,6 +292,7 @@ void Juego_Reset(Juego *j)
     j->puntaje = 0;
     j->lineasG = 0;
     j->nivel = 0;
+    j->hold = 0;
 }
 
 double Juego_Niveles(Juego *j)

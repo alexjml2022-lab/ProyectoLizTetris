@@ -194,6 +194,12 @@ int main()
             DrawText("Next", 365, 145, 38, WHITE);
             DrawRectangleRounded({320, 190, 170, 150}, 0.15, 6, tetoGrey);
 
+            if (!juego.gameOver)
+            {
+                DrawText("Hold", 365, 365, 38, WHITE);
+                DrawRectangleRounded({320, 405, 170, 150}, 0.15, 6, tetoGrey);
+            }
+
             Juego_Dibujar(&juego);
 
             if (juego.gameOver)
@@ -250,7 +256,7 @@ int main()
                         }
                     }
                 }
-                
+
                 int totalAMostrar = (contador < 15) ? contador : 15;
                 for (int i = 0; i < totalAMostrar; i++)
                 {
