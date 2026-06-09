@@ -55,7 +55,7 @@ int main()
     SetWindowIcon(icono);
     UnloadImage(icono);
     SetTargetFPS(60);
-    Texture2D fondoMenu = LoadTexture("public/fondo.png");
+    Texture2D fondoMenu = LoadTexture("public/fondoTeto.jpg");
     Juego juego;
     bool juegoInicializado = false;
 
@@ -149,9 +149,11 @@ int main()
             break;
         }
         //---------------------Dibujos----------------------
+
         BeginDrawing();
-        DrawTexture(fondoMenu, 0, 0, WHITE);
+        DrawTexture(fondoMenu, -100, -200, WHITE);
         ClearBackground(tetoRed);
+
         if (estadoJ == MENU)
         {
             if (ratonSobreJugar)
@@ -199,6 +201,13 @@ int main()
             {
                 DrawText("Hold", 365, 365, 38, WHITE);
                 DrawRectangleRounded({320, 405, 170, 150}, 0.15, 6, tetoGrey);
+                DrawText("M Menu", 365, 560, 19, WHITE);
+                if (IsKeyPressed(KEY_M))
+                {
+                    Juego_Reset(&juego);
+                    juegoInicializado = false;
+                    estadoJ = MENU;
+                }
             }
 
             Juego_Dibujar(&juego);
@@ -287,7 +296,7 @@ int main()
     {
         Juego_Destruir(&juego);
     }
-    
+
     CloseAudioDevice();
     CloseWindow();
     return 0;
