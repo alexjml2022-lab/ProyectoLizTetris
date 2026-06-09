@@ -293,6 +293,7 @@ void Juego_Reset(Juego *j)
     j->lineasG = 0;
     j->nivel = 0;
     j->hold = 0;
+    j->tieneBloqueHold = false;
 }
 
 double Juego_Niveles(Juego *j)
